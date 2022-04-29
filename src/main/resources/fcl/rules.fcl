@@ -1,0 +1,228 @@
+FUNCTION_BLOCK Damage
+
+VAR_INPUT
+    Vida : REAL;
+    Resistencia : REAL;
+    Ataque : REAL;
+END_VAR
+
+VAR_OUTPUT
+   	Damage : REAL;
+    Velocidad: REAL;
+END_VAR
+
+FUZZIFY Vida
+    TERM MuyBajo := trape 0 0 12 22; 
+    TERM Bajo := trape 12 22 34 44;
+    TERM Normal := trape 34 44 56 66;
+    TERM Alto := trape 56 66 78 88;
+    TERM MuyAlto := trape 78 88 100 100;
+END_FUZZIFY
+
+FUZZIFY Resistencia
+    TERM MuyDebil := trape 0 0 12 22; 
+    TERM Debil := trape 12 22 34 44;
+    TERM Moderado := trape 34 44 56 66;
+    TERM Fuerte := trape 56 66 78 88;
+    TERM MuyFuerte := trape 78 88 100 100;
+END_FUZZIFY
+
+FUZZIFY Ataque
+    TERM MuyDebil := trape 0 0 12 22; 
+    TERM Debil := trape 12 22 34 44;
+    TERM Moderado := trape 34 44 56 66;
+    TERM Fuerte := trape 56 66 78 88;
+    TERM MuyFuerte := trape 78 88 100 100;
+END_FUZZIFY
+
+DEFUZZIFY Velocidad
+    TERM MuyBajo := trape 0 0 1 2; 
+    TERM Bajo := trape 1 2 2 3;
+    TERM Normal := trape 2 3 3 4;
+    TERM Alto := trape 3 4 4 5;
+    TERM MuyAlto := trape 4 5 6 6;
+    METHOD : COG;
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+DEFUZZIFY Damage
+    TERM Bajo := trape 0 0 10 15; 
+    TERM Moderado := trape 10 15 25 30;
+    TERM Alto := trape 25 30 40 40;
+    METHOD : COG;
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1   
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+ 
+	Rule 1 : IF Ataque IS MuyDebil AND Resistencia IS MuyDebil 
+				THEN Damage IS Moderado;
+		
+	Rule 2 : IF Ataque IS MuyDebil AND Resistencia IS Debil 
+				THEN Damage IS Bajo;
+				
+	Rule 3 : IF Ataque IS MuyDebil AND Resistencia IS Moderado 
+				THEN Damage IS Bajo;
+		
+	Rule 4 : IF Ataque IS MuyDebil AND Resistencia IS Fuerte 
+				THEN Damage IS Bajo;
+		
+	Rule 5 : IF Ataque IS MuyDebil AND Resistencia IS MuyFuerte
+				THEN Damage IS Bajo;
+
+	Rule 6 : IF Ataque IS Debil AND Resistencia IS MuyDebil 
+				THEN Damage IS Moderado;
+		
+	Rule 7 : IF Ataque IS Debil AND Resistencia IS Debil 
+				THEN Damage IS Moderado;
+		
+	Rule 8 : IF Ataque IS Debil AND Resistencia IS Moderado 
+				THEN Damage IS Bajo;
+		
+	Rule 9 : IF Ataque IS Debil AND Resistencia IS Fuerte 
+				THEN Damage IS Bajo;
+		
+	Rule 10 : IF Ataque IS Debil AND Resistencia IS MuyFuerte
+				THEN Damage IS Bajo;
+
+	Rule 11 : IF Ataque IS Moderado AND Resistencia IS MuyDebil 
+				THEN Damage IS Alto;
+		
+	Rule 12 : IF Ataque IS Moderado AND Resistencia IS Debil 
+				THEN Damage IS Moderado;
+		
+	Rule 13 : IF Ataque IS Moderado AND Resistencia IS Moderado 
+				THEN Damage IS Moderado;
+		
+	Rule 14 : IF Ataque IS Moderado AND Resistencia IS Fuerte 
+				THEN Damage IS Bajo;
+
+	Rule 15 : IF Ataque IS Moderado AND Resistencia IS MuyFuerte
+				THEN Damage IS Bajo;
+
+	Rule 16 : IF Ataque IS Fuerte AND Resistencia IS MuyDebil 
+				THEN Damage IS Alto;
+		
+	Rule 17 : IF Ataque IS Fuerte AND Resistencia IS Debil 
+				THEN Damage IS Alto;
+		
+	Rule 18 : IF Ataque IS Fuerte AND Resistencia IS Moderado 
+				THEN Damage IS Moderado;
+		
+	Rule 19 : IF Ataque IS Fuerte AND Resistencia IS Fuerte 
+				THEN Damage IS Moderado;
+		
+	Rule 20 : IF Ataque IS Fuerte AND Resistencia IS MuyFuerte
+				THEN Damage IS Bajo;
+				
+	RULE 21 : IF Ataque IS MuyFuerte AND Resistencia IS MuyDebil 
+                THEN Damage IS Alto;
+
+	RULE 22 : IF Ataque IS MuyFuerte AND Resistencia IS Debil 
+                THEN Damage IS Alto;
+
+	RULE 23 : IF Ataque IS MuyFuerte AND Resistencia IS Moderado 
+                THEN Damage IS Alto;
+
+	RULE 24 : IF Ataque IS MuyFuerte AND Resistencia IS Fuerte 
+                THEN Damage IS Moderado;
+
+	RULE 25 : IF Ataque IS MuyFuerte AND Resistencia IS MuyFuerte 
+                THEN Damage IS Moderado;
+	
+    RULE 26 : IF Vida IS MuyBajo AND Ataque IS MuyDebil 
+                THEN Damage IS Bajo;
+    
+    RULE 27 : IF Vida IS MuyBajo AND Ataque IS Debil
+                THEN Damage IS Bajo;
+
+    RULE 28 : IF Vida IS MuyBajo AND Ataque IS Moderado 
+                THEN Damage IS Bajo;
+                
+    RULE 29 : IF Vida IS MuyBajo AND Ataque IS Fuerte  
+                THEN Damage IS Bajo;                                
+
+	RULE 30 : IF Vida IS MuyBajo AND Ataque IS MuyFuerte 
+                THEN Damage IS Moderado;
+                
+    RULE 31 : IF Vida IS Bajo AND Ataque IS MuyDebil 
+                THEN Damage IS Bajo;      
+                
+    RULE 32 : IF Vida IS Bajo AND Ataque IS Debil 
+                THEN Damage IS Bajo;              
+                
+    RULE 33 : IF Vida IS Bajo AND Ataque IS Moderado 
+                THEN Damage IS Bajo;                 
+                
+    RULE 34 : IF Vida IS Bajo AND Ataque IS Fuerte 
+                THEN Damage IS Moderado; 
+
+    RULE 35 : IF Vida IS Bajo AND Ataque IS MuyFuerte 
+                THEN Damage IS Moderado;
+
+    RULE 36 : IF Vida IS Normal AND Ataque IS MuyDebil 
+                THEN Damage IS Bajo;
+               
+    RULE 37 : IF Vida IS Normal AND Ataque IS Debil 
+                THEN Damage IS Bajo;                
+                
+    RULE 38 : IF Vida IS Normal AND Ataque IS Moderado 
+                THEN Damage IS Moderado;
+                
+    RULE 39 : IF Vida IS Normal AND Ataque IS Fuerte 
+                THEN Damage IS Moderado;
+                
+    RULE 40 : IF Vida IS Normal AND Ataque IS MuyFuerte 
+                THEN Damage IS Alto;
+    
+    RULE 41 : IF Vida IS Alto AND Ataque IS MuyDebil 
+                THEN Damage IS Bajo;
+                
+    RULE 42 : IF Vida IS Alto AND Ataque IS Debil 
+                THEN Damage IS Moderado;
+                
+    RULE 43 : IF Vida IS Alto AND Ataque IS Moderado 
+                THEN Damage IS Moderado;
+                
+    RULE 44 : IF Vida IS Alto AND Ataque IS Fuerte 
+                THEN Damage IS Alto;
+                
+    RULE 45 : IF Vida IS Alto AND Ataque IS MuyFuerte 
+                THEN Damage IS Alto;
+                
+    RULE 46 : IF Vida IS MuyAlto AND Ataque IS MuyDebil 
+                THEN Damage IS Moderado;
+                
+	RULE 47 : IF Vida IS MuyAlto AND Ataque IS Debil 
+                THEN Damage IS Moderado;
+                
+    RULE 48 : IF Vida IS MuyAlto AND Ataque IS Moderado 
+                THEN Damage IS Alto;
+               
+    RULE 49 : IF Vida IS MuyAlto AND Ataque IS Fuerte 
+                THEN Damage IS Alto;                 
+                
+    RULE 50 : IF Vida IS MuyAlto AND Ataque IS MuyFuerte 
+                THEN Damage IS Alto;     
+                
+    RULE 51 : IF Vida IS MuyBajo
+                THEN Velocidad IS MuyBajo;       
+    
+    RULE 52 : IF Vida IS Bajo
+                THEN Velocidad IS Bajo;  
+           
+    RULE 53 : IF Vida IS Normal
+                THEN Velocidad IS Normal;      
+                
+    RULE 54 : IF Vida IS Alto
+                THEN Velocidad IS Alto;
+                
+    RULE 55 : IF Vida IS MuyAlto
+                THEN Velocidad IS MuyAlto;   
+                                                                                                                                                                                                                                                           
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
